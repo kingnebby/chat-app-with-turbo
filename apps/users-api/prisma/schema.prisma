@@ -5,6 +5,11 @@ generator client {
   provider = "prisma-client-js"
 }
 
+generator tsClassGenerator {
+  provider = "prisma-class-generator"
+  dryRun   = false
+}
+
 datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
@@ -20,6 +25,7 @@ model Profile {
 model User {
   id       Int      @id @default(autoincrement())
   email    String   @unique
+  password String?
   username String?
   profile  Profile?
 }

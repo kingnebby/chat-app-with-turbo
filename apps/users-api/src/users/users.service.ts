@@ -8,4 +8,9 @@ export class UsersService {
     const allUsers = await prisma.user.findMany();
     return allUsers;
   }
+
+  async findOne(email: string) {
+    const user = await prisma.user.findUnique({ where: { email: email } });
+    return user;
+  }
 }
