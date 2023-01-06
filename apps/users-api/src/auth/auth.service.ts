@@ -13,17 +13,12 @@ export class AuthService {
   ) {}
 
   async validateUser(email: string, pass: string): Promise<UserDTO> {
-    const user = await this.usersService.findOne(email);
-
-    const hashedPassword = await hashPassword(pass);
-
-    if (await compare(pass, hashedPassword)) {
-      const { password, ...rest } = user;
-      const userDto: UserDTO = rest;
+    const dbPassword = await this.usersService.getPassword(email);
+    if (await compare(pass, dbPassword)) {
+      const userDto = await this.usersService.findOne(email);
       Logger.log({ user: userDto }, 'user logged in');
       return userDto;
     }
-    Logger.debug({ email, pass, user, hashedPassword });
     Logger.error({ email }, 'passwords do not match');
     throw new Error('unable to validate users');
   }

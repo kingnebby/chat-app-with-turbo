@@ -23,6 +23,8 @@ Using the library: <https://github.com/kimjbstar/prisma-class-generator> we can 
 
 We can turn this off with the option `useSwagger = false` in the prisma `generator` definition, but I'll leave it on for now.
 
+Note: As of this writting, I'm not recommending this approach because this ties your API to your data model, which is not generally what you want to do. You should rather make use of DTO objects once data comes out of your db which is exactly what prisma gives you.
+
 ## References
 
 - <https://hub.docker.com/_/postgres/>
