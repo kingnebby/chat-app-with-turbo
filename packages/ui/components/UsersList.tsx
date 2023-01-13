@@ -16,8 +16,6 @@ export function UsersList() {
   if (error) {
     return <div>{(error as Error).message}</div>
   }
-  console.log(data);
-  console.log();
 
   return <div>
     {data?.map((el, index) => {

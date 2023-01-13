@@ -1,6 +1,12 @@
 # Turborepo starter (but not for long!)
 
-This is an official pnpm starter turborepo.
+## Getting started
+
+```sh
+docker-compose up -d
+cd apps/users-api && npx prisma db push && cd -
+pnpm run dev
+```
 
 ## What's inside?
 
