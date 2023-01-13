@@ -2,12 +2,6 @@ import { PrismaClient } from '@prisma/client';
 import { hashPassword } from '../src/auth/salt-password';
 const prisma = new PrismaClient();
 async function main() {
-  // drop db
-  // await prisma.$transaction([
-  //   prisma.user.deleteMany(),
-  //   prisma.profile.deleteMany(),
-  // ]);
-
   // create
   const createDan = prisma.user.create({
     data: {
@@ -15,6 +9,7 @@ async function main() {
       username: 'kingnebby',
       password: await hashPassword('password'),
       profile: { create: { bio: 'I do stuff and things' } },
+      usersRoles: ['USER'],
     },
   });
   const createEm = prisma.user.create({
@@ -23,6 +18,7 @@ async function main() {
       username: 'joywave',
       password: await hashPassword('password'),
       profile: { create: { bio: 'I do things and stuff' } },
+      usersRoles: ['ADMIN', 'USER'],
     },
   });
   return Promise.all([createDan, createEm]);
