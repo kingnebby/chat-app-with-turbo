@@ -177,19 +177,24 @@ importers:
 
   packages/ui:
     specifiers:
+      '@tanstack/react-query': ^4.20.9
       '@types/react': ^18.0.17
       '@types/react-dom': ^18.0.6
       eslint: ^7.32.0
       eslint-config-custom: workspace:*
       react: ^18.2.0
+      react-dom: 18.2.0
       tsconfig: workspace:*
       typescript: ^4.5.2
+    dependencies:
+      '@tanstack/react-query': 4.20.9_biqbaboplfbrettd7655fr4n2y
     devDependencies:
       '@types/react': 18.0.26
       '@types/react-dom': 18.0.10
       eslint: 7.32.0
       eslint-config-custom: link:../eslint-config-custom
       react: 18.2.0
+      react-dom: 18.2.0_react@18.2.0
       tsconfig: link:../tsconfig
       typescript: 4.9.4
 
@@ -6020,7 +6025,6 @@ packages:
       loose-envify: 1.4.0
       react: 18.2.0
       scheduler: 0.23.0
-    dev: false
 
   /react-is/16.13.1:
     resolution: {integrity: sha512-24e6ynE2H+OKt4kqsOvNd8kBpV65zoxbA4BVsEOB3ARVWQki/DHzaUoC5KuON/BiccDaCCTZBuOcfZs70kR8bQ==}
@@ -6231,7 +6235,6 @@ packages:
     resolution: {integrity: sha512-CtuThmgHNg7zIZWAXi3AsyIzA3n4xx7aNyjwC2VJldO2LMVDhFK+63xGqq6CsJH4rTAt6/M+N4GhZiDYPx9eUw==}
     dependencies:
       loose-envify: 1.4.0
-    dev: false
 
   /schema-utils/3.1.1:
     resolution: {integrity: sha512-Y5PQxS4ITlC+EahLuXaY86TXfR7Dc5lw294alXOq86JAHCihAIZfqv8nNCWvaEJvaC51uN9hbLGeV0cFBdH+Fw==}

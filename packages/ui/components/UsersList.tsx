@@ -1,8 +1,7 @@
 import { useQuery } from "@tanstack/react-query";
 import { UsersDTO } from "./types/users";
-export function UsersList() {
 
-  // Do a query
+export function UsersList() {
   const { isLoading, error, data } = useQuery<UsersDTO[]>({
     queryKey: ['data'],
     queryFn: async () => {
@@ -18,6 +17,7 @@ export function UsersList() {
     return <div>{(error as Error).message}</div>
   }
   console.log(data);
+  console.log();
 
   return <div>
     {data?.map((el, index) => {
