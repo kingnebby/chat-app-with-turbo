@@ -30,6 +30,7 @@
     "@nestjs/swagger": "^6.1.4",
     "@prisma/client": "^4.8.1",
     "@types/bcrypt": "^5.0.0",
+    "@types/passport-local": "^1.0.35",
     "bcrypt": "^5.1.0",
     "passport": "^0.6.0",
     "passport-jwt": "^4.0.1",

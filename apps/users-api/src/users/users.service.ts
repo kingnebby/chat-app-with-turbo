@@ -10,13 +10,9 @@ export class UsersService {
     return allUsers;
   }
 
-  async findOne(email: string): Promise<UserDTO> {
+  async findOne(email: string) {
     const user = await prisma.user.findUnique({ where: { email: email } });
-    return {
-      email: user.email,
-      username: user.username,
-      id: user.id,
-    };
+    return user;
   }
 
   async getPassword(email: string) {
