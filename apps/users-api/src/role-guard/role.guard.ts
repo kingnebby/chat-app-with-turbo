@@ -3,8 +3,6 @@ import { Reflector } from '@nestjs/core';
 import { Role } from '@prisma/client';
 import { Observable } from 'rxjs';
 import { RequestUser } from 'src/auth/dto/request-user';
-import { TokenPayload } from 'src/auth/dto/token.dto';
-import { UserDTO } from 'src/auth/dto/user.dto';
 import { SET_ROLES_KEY } from './role.decorator';
 
 @Injectable()
@@ -27,6 +25,7 @@ export class RoleGuard implements CanActivate {
     };
     const { params, user } = context.switchToHttp().getRequest() as UserRequest;
 
+    // Move this to another endpoint.
     // // if this user owns the data, good to go.
     if (user.userId === parseInt(params.id)) {
       return true;
