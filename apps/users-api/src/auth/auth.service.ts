@@ -3,6 +3,7 @@ import { JwtService } from '@nestjs/jwt';
 import { User } from '@prisma/client';
 import { UsersService } from 'src/users/users.service';
 import { TokenPayload } from './dto/token.dto';
+import { UserDTO } from './dto/user.dto';
 import { compare } from './salt-password';
 
 @Injectable()
@@ -12,22 +13,28 @@ export class AuthService {
     private jwtService: JwtService,
   ) {}
 
-  async validateUser(email: string, pass: string): Promise<User> {
-    const dbPassword = await this.usersService.getPassword(email);
+  async validateUser(_email: string, pass: string): Promise<UserDTO> {
+    const dbPassword = await this.usersService.getPassword(_email);
     if (await compare(pass, dbPassword)) {
-      const userDto = await this.usersService.findOne(email);
-      Logger.log({ user: userDto }, 'user logged in');
-      return userDto;
+      const { email, id, username, usersRoles } =
+        await this.usersService.findOne(_email);
+      return {
+        email,
+        id,
+        username,
+        roles: usersRoles,
+      };
     }
-    Logger.error({ email }, 'passwords do not match');
+    Logger.error({ email: _email }, 'passwords do not match');
     throw new Error('unable to validate users');
   }
 
-  async login(user: User) {
+  async login(user: UserDTO) {
     const payload: TokenPayload = {
-      username: user.email,
+      email: user.email,
+      username: user.username,
       sub: user.id,
-      roles: user.usersRoles,
+      roles: user.roles,
     };
     return {
       access_token: this.jwtService.sign(payload),
