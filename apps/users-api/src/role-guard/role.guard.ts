@@ -17,8 +17,6 @@ export class RoleGuard implements CanActivate {
     );
     if (!expectedRoles) return true;
 
-    // for some reason the user object (the jwt) does not
-    // have roles in it.
     type UserRequest = {
       user: RequestUser;
       params: { id: string };
