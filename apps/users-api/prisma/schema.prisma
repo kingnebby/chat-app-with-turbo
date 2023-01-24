@@ -5,10 +5,10 @@ generator client {
   provider = "prisma-client-js"
 }
 
-generator tsClassGenerator {
-  provider = "prisma-class-generator"
-  dryRun   = false
-}
+// generator tsClassGenerator {
+//   provider = "prisma-class-generator"
+//   dryRun   = false
+// }
 
 datasource db {
   provider = "postgresql"

@@ -1,0 +1,26 @@
+{
+  "autorun": true,
+  "terminals": [
+    {
+      "name": "Home - Git",
+      "icon": "git-branch",
+      "description": "This is a description",
+      "command": "gst"
+    },
+    {
+      "name": "Home - cli",
+      "icon": "code",
+      "command": "node --version"
+    },
+    {
+      "name": "Turbo Run",
+      "icon": "run-all",
+      "command": "pnpm run dev"
+    },
+    {
+      "name": "apps/users-api: cli",
+      "icon": "person",
+      "command": "cd apps/users-api"
+    }
+  ]
+}
