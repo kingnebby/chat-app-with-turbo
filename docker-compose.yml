@@ -2,7 +2,6 @@
 version: '3.1'
 
 services:
-
   db:
     image: postgres
     restart: always
@@ -10,6 +9,19 @@ services:
       POSTGRES_PASSWORD: example
     ports:
       - 5432:5432
+
+  mongo:
+    image: mongo
+    build: ./mongo_rs
+    restart: always
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: mongo
+      MONGO_INITDB_ROOT_PASSWORD: example
+      MONGO_INITDB_DATABASE: mongo
+      MONGO_REPLICA_HOST: localhost
+      MONGO_REPLICA_PORT: 27017
+    ports:
+      - '27017:27017'
 
   adminer:
     image: adminer
