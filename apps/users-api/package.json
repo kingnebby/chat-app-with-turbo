@@ -9,6 +9,8 @@
     "prebuild": "rimraf dist",
     "build": "nest build",
     "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
+    "generate": "prisma generate",
+    "db:seed": "prisma migrate reset -f",
     "start": "nest start",
     "dev": "nest start --watch --preserveWatchOutput",
     "start:dev": "nest start --watch",

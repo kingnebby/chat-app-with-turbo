@@ -1,4 +1,4 @@
-import { PrismaClient } from '@prisma/client';
+import { PrismaClient } from '.prisma/client';
 import { hashPassword } from '../src/auth/salt-password';
 const prisma = new PrismaClient();
 async function main() {
