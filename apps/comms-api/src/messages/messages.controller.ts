@@ -22,7 +22,7 @@ export class MessagesController {
   }
 
   @Get()
-  findAll(): Promise<any[]> {
+  findAll(): Promise<Message[]> {
     return this.messagesService.findAll();
   }
 

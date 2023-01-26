@@ -1,8 +1,8 @@
 export class Message {
   id: string;
   message: string;
-  author: number;
-  receiver: number;
+  authorId: string;
+  conversationId: string;
   createdAt: Date;
   updatedAt: Date;
 }
