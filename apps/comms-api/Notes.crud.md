@@ -32,3 +32,24 @@ Fill out the details of the generated resource
 ```http
 GET {{msg-api}}/messages
 ```
+
+Create a Message
+
+```ts
+// messages/dto/create-message.dto.ts
+export class CreateMessageDto {
+  message: string;
+  author: number;
+  receiver: number;
+}
+
+// message.service.ts
+
+create(createMessageDto: CreateMessageDto) {
+    return prisma.message.create({
+      data: {
+        ...createMessageDto,
+      },
+    });
+  }
+```
