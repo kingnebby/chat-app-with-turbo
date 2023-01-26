@@ -20,15 +20,18 @@ export class MessagesService {
     return prisma.message.findMany();
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} message`;
+  findOne(id: string) {
+    return prisma.message.findUnique({ where: { id } });
   }
 
-  update(id: number, updateMessageDto: UpdateMessageDto) {
-    return `This action updates a #${id} message`;
+  update(id: string, updateMessageDto: UpdateMessageDto) {
+    return prisma.message.update({
+      data: { ...updateMessageDto },
+      where: { id },
+    });
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} message`;
+  remove(id: string) {
+    return prisma.message.delete({ where: { id } });
   }
 }

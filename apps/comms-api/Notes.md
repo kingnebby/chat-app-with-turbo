@@ -77,46 +77,66 @@ DATABASE_URL="mongodb://mongo:example@localhost:27017/mongo?authSource=admin"
 // This is your Prisma schema file,
 // learn more about it in the docs: https://pris.ly/d/prisma-schema
 
-generator client {
-  provider = "prisma-client-js"
-  output   = "../node_modules/.prisma/client"
-}
-
-datasource db {
-  provider = "mongodb"
-  url      = env("DATABASE_URL")
-}
-
 model User {
-  id     String @id @default(auto()) @map("_id") @db.ObjectId
-  userId BigInt @unique
+  id              String         @id @default(auto()) @map("_id") @db.ObjectId
+  createdAt       DateTime       @default(now())
+  updatedAt       DateTime       @updatedAt
+  // Foreign key to the Users API Postgres DB
+  userId          BigInt         @unique
+  Conversations   Conversation[] @relation(fields: [conversationIds], references: [id])
+  conversationIds String[]       @db.ObjectId
+  Messages        Message[]
 }
 
 model Message {
-  id       String @id @default(auto()) @map("_id") @db.ObjectId
-  message  String
-  author   Int
-  receiver Int
+  id             String       @id @default(auto()) @map("_id") @db.ObjectId
+  message        String
+  createdAt      DateTime     @default(now())
+  updatedAt      DateTime     @updatedAt
+  Author         User         @relation(fields: [authorId], references: [id])
+  authorId       String       @db.ObjectId
+  Conversation   Conversation @relation(fields: [conversationId], references: [id])
+  conversationId String       @db.ObjectId
+}
+
+model Conversation {
+  id              String    @id @default(auto()) @map("_id") @db.ObjectId
+  Messages        Message[]
+  Participants    User[]    @relation(fields: [participantsIds], references: [id])
+  participantsIds String[]  @db.ObjectId
 }
 ```
 
 - Since we're using `pnpm` workspaces with multiple instances of prisma, you need
 to tell prisma to generate locally with the `output` configuration.
 - Add your db models.
+- Run `npx prisma db push --force-reset` to drop db and redeploy the schema
 
 ```ts
-//  prisma/seed.ts
 import { PrismaClient } from '.prisma/client';
 const prisma = new PrismaClient();
 
 async function main() {
-  await prisma.user.createMany({
+  const userDan = await prisma.user.create({ data: { userId: 1 } });
+  const userEmily = await prisma.user.create({ data: { userId: 2 } });
+
+  const conversation = await prisma.conversation.create({
+    data: {
+      Participants: { connect: [{ id: userDan.id }, { id: userEmily.id }] },
+    },
+  });
+
+  await prisma.message.createMany({
     data: [
       {
-        userId: 1,
+        message: 'hey emily!',
+        authorId: userDan.id,
+        conversationId: conversation.id,
       },
       {
-        userId: 2,
+        message: 'good to hear from you dan!',
+        authorId: userEmily.id,
+        conversationId: conversation.id,
       },
     ],
   });
@@ -138,6 +158,8 @@ rs0:PRIMARY> db.User.count()
 ```
 
 You can validate the data by executing the mongo shell and checking the user collection count.
+
+Or using prisma schema to see your data.
 
 ## TODO
 
