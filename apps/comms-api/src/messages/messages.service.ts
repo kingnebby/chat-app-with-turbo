@@ -9,7 +9,9 @@ export class MessagesService {
   create(createMessageDto: CreateMessageDto) {
     return prisma.message.create({
       data: {
-        ...createMessageDto,
+        message: createMessageDto.message,
+        Author: { connect: { id: createMessageDto.authorId } },
+        Conversation: { connect: { id: createMessageDto.conversationId } },
       },
     });
   }

@@ -2,27 +2,26 @@ import { PrismaClient } from '.prisma/client';
 const prisma = new PrismaClient();
 
 async function main() {
-  await prisma.user.createMany({
-    data: [
-      {
-        userId: 1,
-      },
-      {
-        userId: 2,
-      },
-    ],
+  const userDan = await prisma.user.create({ data: { userId: 1 } });
+  const userEmily = await prisma.user.create({ data: { userId: 2 } });
+
+  const conversation = await prisma.conversation.create({
+    data: {
+      Participants: { connect: [{ id: userDan.id }, { id: userEmily.id }] },
+    },
   });
+
   await prisma.message.createMany({
     data: [
       {
-        author: 1,
         message: 'hey emily!',
-        receiver: 2,
+        authorId: userDan.id,
+        conversationId: conversation.id,
       },
       {
-        author: 2,
         message: 'good to hear from you dan!',
-        receiver: 1,
+        authorId: userEmily.id,
+        conversationId: conversation.id,
       },
     ],
   });
