@@ -12,13 +12,17 @@ datasource db {
 }
 
 model User {
-  id     String @id @default(auto()) @map("_id") @db.ObjectId
-  userId BigInt @unique
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  userId    BigInt   @unique
 }
 
 model Message {
-  id       String @id @default(auto()) @map("_id") @db.ObjectId
-  message  String
-  author   Int
-  receiver Int
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  message   String
+  author    Int
+  receiver  Int
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }

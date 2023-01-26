@@ -12,6 +12,20 @@ async function main() {
       },
     ],
   });
+  await prisma.message.createMany({
+    data: [
+      {
+        author: 1,
+        message: 'hey emily!',
+        receiver: 2,
+      },
+      {
+        author: 2,
+        message: 'good to hear from you dan!',
+        receiver: 1,
+      },
+    ],
+  });
 }
 
 main();

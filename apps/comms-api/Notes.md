@@ -138,3 +138,9 @@ rs0:PRIMARY> db.User.count()
 ```
 
 You can validate the data by executing the mongo shell and checking the user collection count.
+
+## TODO
+
+[ ] The data is currently seeded assuming some hard coded user ids.
+We'll use sagas later to ensure that when a new user is created a
+new user in the comms-api is also created.
