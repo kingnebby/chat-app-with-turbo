@@ -122,6 +122,7 @@ export class WsJwtAuthGuard implements CanActivate {
 
 - Use Nest's `context` to get headers.
 - We use `jsonwebtoken` to do standard jwt `verify`.
+- Ensure we don't process unless we're in the `ws` context.
 
 ```ts
 // src/app.module.ts
@@ -137,3 +138,5 @@ export class AppModule {}
 ```
 
 - This will apply the guard to all Web Socket endpoints.
+
+Validate with the same Postman flow as before.
