@@ -1,11 +1,10 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
 import {
   MessageBody,
   SubscribeMessage,
   WebSocketGateway,
   WebSocketServer,
 } from '@nestjs/websockets';
-
 import { Server } from 'socket.io';
 import { Message } from './dto/message';
 
@@ -16,8 +15,8 @@ export class EventsGateway {
   server: Server;
 
   @SubscribeMessage('message')
-  // recommended to remove the reference to _client to make testing easier.
-  handleMessage(_client: any, @MessageBody() payload: string): string {
+  handleMessage(@MessageBody() payload: string): string {
+    Logger.log('request', payload);
     return `ack: ${payload}`;
   }
 

@@ -17,7 +17,9 @@ importers:
       '@nestjs/cli': ^9.0.0
       '@nestjs/common': ^9.0.0
       '@nestjs/core': ^9.0.0
+      '@nestjs/jwt': ^10.0.1
       '@nestjs/mapped-types': '*'
+      '@nestjs/passport': ^9.0.0
       '@nestjs/platform-express': ^9.0.0
       '@nestjs/platform-socket.io': ^9.2.1
       '@nestjs/schematics': ^9.0.0
@@ -26,7 +28,9 @@ importers:
       '@prisma/client': ^4.8.1
       '@types/express': ^4.17.13
       '@types/jest': 28.1.8
+      '@types/jsonwebtoken': ^9.0.1
       '@types/node': ^16.0.0
+      '@types/passport-jwt': ^3.0.8
       '@types/supertest': ^2.0.11
       '@typescript-eslint/eslint-plugin': ^5.0.0
       '@typescript-eslint/parser': ^5.0.0
@@ -34,6 +38,8 @@ importers:
       eslint-config-prettier: ^8.3.0
       eslint-plugin-prettier: ^4.0.0
       jest: 28.1.3
+      jsonwebtoken: ^9.0.0
+      passport-jwt: ^4.0.1
       prettier: ^2.3.2
       prisma: ^4.8.1
       reflect-metadata: ^0.1.13
@@ -50,10 +56,16 @@ importers:
     dependencies:
       '@nestjs/common': 9.2.1_mnr6j2del53muneqly5h4y27ai
       '@nestjs/core': 9.2.1_w3aokaw6dj62wscfwgppttd7ii
+      '@nestjs/jwt': 10.0.1_@nestjs+common@9.2.1
       '@nestjs/mapped-types': 1.2.0_n3ccvzwmui2f6jwh4xeqysew6i
+      '@nestjs/passport': 9.0.0_6o47igfla2pj7yzh7agpvpttka
       '@nestjs/platform-express': 9.2.1_hjcqpoaebdr7gdo5hgc22hthbe
       '@nestjs/platform-socket.io': 9.2.1_75thavexiqyxpvcxom3j44gxby
       '@nestjs/websockets': 9.2.1_cbx4gblrpxxed5smhozfworgty
+      '@types/jsonwebtoken': 9.0.1
+      '@types/passport-jwt': 3.0.8
+      jsonwebtoken: 9.0.0
+      passport-jwt: 4.0.1
       prisma: 4.8.1
       reflect-metadata: 0.1.13
       rimraf: 3.0.2
@@ -77,8 +89,8 @@ importers:
       prettier: 2.8.1
       source-map-support: 0.5.21
       supertest: 6.3.3
-      ts-jest: 28.0.8_ra2f52bqkg4l5hhftg6v7qm6jm
-      ts-loader: 9.4.2_typescript@4.9.4
+      ts-jest: 28.0.8_ea2rtatxj6w4qpnwak3ijkzgwi
+      ts-loader: 9.4.2_3fkjkrd3audxnith3e7fo4fnxi
       ts-node: 10.9.1_qacynw5b4krdzzrloasmebsynu
       tsconfig-paths: 4.1.0
       typescript: 4.9.4
@@ -290,7 +302,7 @@ packages:
         optional: true
     dependencies:
       ajv: 8.11.0
-      ajv-formats: 2.1.1
+      ajv-formats: 2.1.1_ajv@8.11.0
       jsonc-parser: 3.2.0
       rxjs: 6.6.7
       source-map: 0.7.4
@@ -306,7 +318,7 @@ packages:
         optional: true
     dependencies:
       ajv: 8.11.0
-      ajv-formats: 2.1.1
+      ajv-formats: 2.1.1_ajv@8.11.0
       chokidar: 3.5.3
       jsonc-parser: 3.2.0
       rxjs: 6.6.7
@@ -1902,6 +1914,12 @@ packages:
     resolution: {integrity: sha512-272FMnFGzAVMGtu9tkr29hRL6bZj4Zs1KZNeHLnKqAvp06tAIcarTMwOh8/8bz4FmKRcMxZhZNeUAQsNLoiPhg==}
     dependencies:
       '@types/node': 17.0.45
+    dev: false
+
+  /@types/jsonwebtoken/9.0.1:
+    resolution: {integrity: sha512-c5ltxazpWabia/4UzhIoaDcIza4KViOQhdbjRlfcIGVnsE3c3brkz9Z+F/EeJIECOQP7W7US2hNE930cWWkPiw==}
+    dependencies:
+      '@types/node': 17.0.45
 
   /@types/mime/3.0.1:
     resolution: {integrity: sha512-Y4XFY5VJAuw0FgAqPNd6NNoV44jbq9Bz2L7Rh/J6jLTiHBSBJa9fxqQIvkIld4GsoDOcCbvzOUAbLPsSKKg+uA==}
@@ -1929,9 +1947,8 @@ packages:
     resolution: {integrity: sha512-VKJZDJUAHFhPHHYvxdqFcc5vlDht8Q2pL1/ePvKAgqRThDaCc84lSYOTQmnx3+JIkDlN+2KfhFhXIzlcVT+Pcw==}
     dependencies:
       '@types/express': 4.17.15
-      '@types/jsonwebtoken': 8.5.9
+      '@types/jsonwebtoken': 9.0.1
       '@types/passport-strategy': 0.2.35
-    dev: true
 
   /@types/passport-local/1.0.35:
     resolution: {integrity: sha512-K4eLTJ8R0yYW8TvCqkjB0pTKoqfUSdl5PfZdidTjV2ETV3604fQxtY6BHKjQWAx50WUS0lqzBvKv3LoI1ZBPeA==}
@@ -2351,13 +2368,15 @@ packages:
       indent-string: 4.0.0
     dev: false
 
-  /ajv-formats/2.1.1:
+  /ajv-formats/2.1.1_ajv@8.11.0:
     resolution: {integrity: sha512-Wx0Kx52hxE7C18hkMEggYlEifqWZtYaRgouJor+WMdPnQyEK13vgEWyVNup7SoeeoLMsr4kf5h6dOW11I15MUA==}
+    peerDependencies:
+      ajv: ^8.0.0
     peerDependenciesMeta:
       ajv:
         optional: true
     dependencies:
-      ajv: 8.12.0
+      ajv: 8.11.0
     dev: true
 
   /ajv-keywords/3.5.2_ajv@6.12.6:
@@ -7018,6 +7037,40 @@ packages:
     hasBin: true
     dev: true
 
+  /ts-jest/28.0.8_ea2rtatxj6w4qpnwak3ijkzgwi:
+    resolution: {integrity: sha512-5FaG0lXmRPzApix8oFG8RKjAz4ehtm8yMKOTy5HX3fY6W8kmvOrmcY0hKDElW52FJov+clhUbrKAqofnj4mXTg==}
+    engines: {node: ^12.13.0 || ^14.15.0 || ^16.10.0 || >=17.0.0}
+    hasBin: true
+    peerDependencies:
+      '@babel/core': '>=7.0.0-beta.0 <8'
+      '@jest/types': ^28.0.0
+      babel-jest: ^28.0.0
+      esbuild: '*'
+      jest: ^28.0.0
+      typescript: '>=4.3'
+    peerDependenciesMeta:
+      '@babel/core':
+        optional: true
+      '@jest/types':
+        optional: true
+      babel-jest:
+        optional: true
+      esbuild:
+        optional: true
+    dependencies:
+      '@babel/core': 7.20.12
+      bs-logger: 0.2.6
+      fast-json-stable-stringify: 2.1.0
+      jest: 28.1.3_35bb52e3ngsl3trrvg3csiponq
+      jest-util: 28.1.3
+      json5: 2.2.3
+      lodash.memoize: 4.1.2
+      make-error: 1.3.6
+      semver: 7.3.8
+      typescript: 4.9.4
+      yargs-parser: 21.1.1
+    dev: true
+
   /ts-jest/28.0.8_ra2f52bqkg4l5hhftg6v7qm6jm:
     resolution: {integrity: sha512-5FaG0lXmRPzApix8oFG8RKjAz4ehtm8yMKOTy5HX3fY6W8kmvOrmcY0hKDElW52FJov+clhUbrKAqofnj4mXTg==}
     engines: {node: ^12.13.0 || ^14.15.0 || ^16.10.0 || >=17.0.0}
@@ -7049,6 +7102,21 @@ packages:
       semver: 7.3.8
       typescript: 4.9.4
       yargs-parser: 21.1.1
+    dev: true
+
+  /ts-loader/9.4.2_3fkjkrd3audxnith3e7fo4fnxi:
+    resolution: {integrity: sha512-OmlC4WVmFv5I0PpaxYb+qGeGOdm5giHU7HwDDUjw59emP2UYMHy9fFSDcYgSNoH8sXcj4hGCSEhlDZ9ULeDraA==}
+    engines: {node: '>=12.0.0'}
+    peerDependencies:
+      typescript: '*'
+      webpack: ^5.0.0
+    dependencies:
+      chalk: 4.1.2
+      enhanced-resolve: 5.12.0
+      micromatch: 4.0.5
+      semver: 7.3.8
+      typescript: 4.9.4
+      webpack: 5.75.0
     dev: true
 
   /ts-loader/9.4.2_typescript@4.9.4:

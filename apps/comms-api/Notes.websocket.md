@@ -84,3 +84,56 @@ export class MessagesService {
 - Add a new event listener for `events`
 - Use findAll() to see users and messages there now
 - Create a message and see the event
+
+## Secure Your Endpoints
+
+NestJs doesn't have native support for securing Websockets.
+
+```sh
+pnpm i jsonwebtoken
+pnpm i -D @types/jsonwebtoken
+```
+
+```ts
+// src/auth/ws-jwt.guard.ts
+import { CanActivate, ExecutionContext, Injectable } from '@nestjs/common';
+import { Socket } from 'socket.io';
+import { verify } from 'jsonwebtoken';
+import env from 'src/env/env';
+
+@Injectable()
+export class WsJwtAuthGuard implements CanActivate {
+  canActivate(context: ExecutionContext): any {
+    if (context.getType() !== 'ws') {
+      return true;
+    }
+    const client: Socket = context.switchToWs().getClient();
+    const headers = client.handshake.headers;
+    const payload = verify(
+      headers.authorization.split('Bearer ')[1],
+      env.jwtSecret
+    );
+    // might use this....
+    // context.switchToWs().getData().user = payload;
+    return payload;
+  }
+}
+```
+
+- Use Nest's `context` to get headers.
+- We use `jsonwebtoken` to do standard jwt `verify`.
+
+```ts
+// src/app.module.ts
+@Module({
+  providers: [
+    {
+      provide: APP_GUARD,
+      useClass: WsJwtAuthGuard,
+    },
+  ],
+})
+export class AppModule {}
+```
+
+- This will apply the guard to all Web Socket endpoints.
