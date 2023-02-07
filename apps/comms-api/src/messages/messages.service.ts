@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
-import { CreateMessageDto } from './dto/create-message.dto';
-import { UpdateMessageDto } from './dto/update-message.dto';
+import { CreateMessageDto } from './dto/create-message.input';
+import { UpdateMessageDto } from './dto/update-message.input';
 import { PrismaClient } from '.prisma/client';
 import { EventsGateway } from 'src/events/events.gateway';
 const prisma = new PrismaClient();

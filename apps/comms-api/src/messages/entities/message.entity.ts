@@ -1,3 +1,6 @@
+import { ObjectType } from '@nestjs/graphql';
+
+@ObjectType()
 export class Message {
   id: string;
   message: string;

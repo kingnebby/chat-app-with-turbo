@@ -1,13 +1,12 @@
-import { Args, Query, Resolver } from '@nestjs/graphql';
+import { Args, Mutation, Query, Resolver } from '@nestjs/graphql';
 import { MessagesService } from '../messages.service';
-import { Message } from './message.model';
 import { PrismaClient } from '.prisma/client';
-import { UseGuards } from '@nestjs/common';
-import { GqlAuthGuard } from 'src/auth/gql.guard';
+import { CreateMessageDto } from '../dto/create-message.input';
+import { Message } from '../entities/message.entity';
+import { UpdateMessageDto } from '../dto/update-message.input';
 const prisma = new PrismaClient();
 
 @Resolver(() => Message)
-@UseGuards(GqlAuthGuard)
 export class MessageResolver {
   constructor(private messageService: MessagesService) {}
 
@@ -19,5 +18,25 @@ export class MessageResolver {
   @Query(() => [Message])
   async findAll() {
     return prisma.message.findMany();
+  }
+
+  @Mutation(() => Message)
+  async create(
+    @Args('createMessage') newMessage: CreateMessageDto,
+  ): Promise<Message> {
+    return this.messageService.create(newMessage);
+  }
+
+  @Mutation(() => Message)
+  async update(
+    @Args('id') id: string,
+    @Args('updateMessage') message: UpdateMessageDto,
+  ) {
+    return this.messageService.update(id, message);
+  }
+
+  @Mutation(() => Message)
+  async remove(@Args('id') id: string) {
+    return this.messageService.remove(id);
   }
 }
