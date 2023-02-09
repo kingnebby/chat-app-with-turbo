@@ -6,9 +6,10 @@ import {
   WebSocketServer,
 } from '@nestjs/websockets';
 import { Server } from 'socket.io';
+import { EventType, EVENT_NAME, NewMessageEvent } from './dto/events';
 import { Message } from './dto/message';
 
-@WebSocketGateway()
+@WebSocketGateway({ namespace: 'events' })
 @Injectable()
 export class EventsGateway {
   @WebSocketServer()
@@ -20,7 +21,11 @@ export class EventsGateway {
     return `ack: ${payload}`;
   }
 
-  sendMessage(payload: Message) {
-    this.server.emit('events', { name: 'new_message', payload });
+  sendNewMessage(message: Message) {
+    const payload: NewMessageEvent = {
+      eventType: EventType.NEW_MESSAGE,
+      payload: message,
+    };
+    this.server.emit(EVENT_NAME, payload);
   }
 }

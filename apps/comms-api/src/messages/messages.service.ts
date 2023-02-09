@@ -17,7 +17,7 @@ export class MessagesService {
         Conversation: { connect: { id: createMessageDto.conversationId } },
       },
     });
-    this.eventsGateway.sendMessage(result);
+    this.eventsGateway.sendNewMessage(result);
     return result;
   }
 
