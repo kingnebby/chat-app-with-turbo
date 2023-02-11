@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { PrismaClient, User } from '@prisma/client';
+import { PrismaClient } from '.prisma/client';
 import { UserType } from 'src/auth/dto/user.dto';
 const prisma = new PrismaClient();
 

@@ -1,19 +1,22 @@
+import { ApolloDriver, ApolloDriverConfig } from '@nestjs/apollo';
 import { Module } from '@nestjs/common';
+import { ConfigModule } from '@nestjs/config';
+import { APP_GUARD } from '@nestjs/core';
+import { GraphQLModule } from '@nestjs/graphql';
+import { AuthGuard } from '@nestjs/passport';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
-import { MessagesModule } from './messages/messages.module';
-import { APP_GUARD } from '@nestjs/core';
-import { AuthGuard } from '@nestjs/passport';
-import { WsJwtAuthGuard } from './auth/ws-jwt.guard';
 import { AuthModule } from './auth/auth.module';
-import { GraphQLModule } from '@nestjs/graphql';
-import { ApolloDriver, ApolloDriverConfig } from '@nestjs/apollo';
 import { GqlAuthGuard } from './auth/gql.guard';
+import { MessagesModule } from './messages/messages.module';
 
 @Module({
   imports: [
-    MessagesModule,
+    ConfigModule.forRoot({
+      isGlobal: true,
+    }),
     AuthModule,
+    MessagesModule,
     GraphQLModule.forRoot<ApolloDriverConfig>({
       driver: ApolloDriver,
       autoSchemaFile: true,
@@ -24,7 +27,7 @@ import { GqlAuthGuard } from './auth/gql.guard';
     AppService,
     {
       provide: APP_GUARD,
-      useClass: WsJwtAuthGuard,
+      useClass: AuthGuard('jwt'),
     },
     {
       provide: APP_GUARD,

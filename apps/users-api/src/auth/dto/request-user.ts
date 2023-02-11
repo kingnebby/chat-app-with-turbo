@@ -1,4 +1,4 @@
-import { Role } from '@prisma/client';
+import { Role } from '.prisma/client';
 
 export type RequestUser = {
   userId: number;
