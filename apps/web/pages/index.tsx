@@ -1,6 +1,6 @@
 import { UsersList } from "ui";
-
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import Graphic from "./Graphic";
 
 const queryClient = new QueryClient()
 
@@ -17,6 +17,8 @@ export function Home() {
       <h1>Web</h1>
       All Users
       <UsersList />
-    </div>
+      <Graphic />
+
+    </div >
   );
 }
