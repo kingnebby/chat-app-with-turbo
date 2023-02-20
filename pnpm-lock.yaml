@@ -229,6 +229,7 @@ importers:
       '@types/react': ^18.0.27
       '@types/react-dom': ^18.0.10
       '@types/three': ^0.149.0
+      bootstrap: ^5.2.3
       eslint: 7.32.0
       eslint-config-custom: workspace:*
       gsap: ^3.11.4
@@ -245,6 +246,7 @@ importers:
       '@react-three/fiber': 8.11.1_xor7byvqlg4baqj6ymfbcmaax4
       '@tanstack/react-query': 4.24.4_biqbaboplfbrettd7655fr4n2y
       '@types/three': 0.149.0
+      bootstrap: 5.2.3_@popperjs+core@2.11.6
       gsap: 3.11.4
       next: 13.0.0_pjwopsidmaokadturxaafygjp4
       react: 18.2.0
@@ -1928,6 +1930,10 @@ packages:
     engines: {node: '>=14'}
     dev: false
 
+  /@popperjs/core/2.11.6:
+    resolution: {integrity: sha512-50/17A98tWUfQ176raKiOGXuYpLyyVMkxxG6oylzL3BPOlA6ADGdK7EYunSa4I064xerltq9TGXs8HmOk5E+vw==}
+    dev: false
+
   /@prisma/client/4.10.1_prisma@4.10.1:
     resolution: {integrity: sha512-VonXLJZybdt8e5XZH5vnIGCRNnIh6OMX1FS3H/yzMGLT3STj5TJ/OkMcednrvELgk8PK89Vo3aSh51MWNO0axA==}
     engines: {node: '>=14.17'}
@@ -3500,6 +3506,14 @@ packages:
       unpipe: 1.0.0
     transitivePeerDependencies:
       - supports-color
+
+  /bootstrap/5.2.3_@popperjs+core@2.11.6:
+    resolution: {integrity: sha512-cEKPM+fwb3cT8NzQZYEu4HilJ3anCrWqh3CHAok1p9jXqMPsPTBhU25fBckEJHJ/p+tTxTFTsFQGM+gaHpi3QQ==}
+    peerDependencies:
+      '@popperjs/core': ^2.11.6
+    dependencies:
+      '@popperjs/core': 2.11.6
+    dev: false
 
   /brace-expansion/1.1.11:
     resolution: {integrity: sha512-iCuPHDFgrHX7H2vEI/5xpz07zSHB00TpugqhmYtVmMO6518mCuRMoOYFldEBl0g187ufozdaHgWKcYFb61qGiA==}

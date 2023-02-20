@@ -1,0 +1,21 @@
+.form {
+  width: 200px;
+  margin: auto;
+  /* width: 100%; */
+  /* display: flex; */
+  /* flex-direction: column; */
+}
+
+.form-column {
+  display: flex;
+  flex-direction: column;
+  list-style-type: none;
+  padding: 0px;
+}
+
+.form-input {
+  margin: 10px 0px;
+  padding: 0px;
+  text-align: center;
+}
+
