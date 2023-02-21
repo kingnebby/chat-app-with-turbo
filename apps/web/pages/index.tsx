@@ -1,20 +1,28 @@
-import { UsersList } from "ui";
-import { Canvas, ThreeElements, useFrame, useThree } from '@react-three/fiber'
-import { OrbitControls, PerspectiveCamera } from "@react-three/drei"
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { useSession } from "next-auth/react";
 import Graphic from "./components/LoginForm/Graphic";
-import NodeGraphic from "./components/LoginForm/NodeGraphic";
 import LoginForm from "./components/LoginForm/LoginForm";
 
-const queryClient = new QueryClient()
-
 export default function App() {
-  return (
-    <QueryClientProvider client={queryClient}>
-      <Home />
-    </QueryClientProvider>
-  )
+  const { data: session } = useSession()
+  console.log(session);
 
+  if (!session) {
+    return (
+      <Home />
+    )
+  }
+
+  return (
+    <>
+      <div className="container display-1">
+        Welcome {session.user?.name}
+        <hr />
+      </div>
+      <div>
+        <a href="/api/auth/signout" className="btn btn-success">Leave</a>
+      </div>
+    </>
+  )
 }
 
 export function Home() {
@@ -38,7 +46,10 @@ export function Home() {
           <Graphic />
         </div>
 
-        <LoginForm />
+        {/* <LoginForm /> */}
+        <div style={{ zIndex: 1 }}>
+          <a href="/api/auth/signin" className="btn btn-success">Enter</a>
+        </div>
 
       </div>
 
