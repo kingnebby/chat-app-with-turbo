@@ -65,3 +65,8 @@ export const authOptions: AuthOptions = {
 ```
 
 ## Add custom provider
+
+- add custom jwt decode logic
+- add `jwt` and `session` callbacks to view data on the front end
+
+## Save the JWT?

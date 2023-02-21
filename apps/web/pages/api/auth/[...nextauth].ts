@@ -51,18 +51,37 @@ export const authOptions: AuthOptions = {
             name: decodedJwt.username,
           };
 
-          return retUser;
+          // @ts-ignore
+          return {
+            ...retUser,
+            token: responseBody.access_token,
+          };
         } catch (error) {
           console.log(error);
           throw error;
         }
       },
     }),
-    // GithubProvider({
-    //   clientId: process.env.GITHUB_ID,
-    //   clientSecret: process.env.GITHUB_SECRET,
-    // }),
-    // ...add more providers here
   ],
+  callbacks: {
+    jwt({ token, user }) {
+      // @ts-ignore
+      if (user?.token) {
+        // @ts-ignore
+        token.accessToken = user.token;
+      }
+      return token;
+      // return { ...token, userToken: user.token };
+    },
+    session({ session, token, user }) {
+      console.log('session');
+      console.log(session, token, user);
+
+      // @ts-ignore
+      session.accessToken = token?.accessToken;
+
+      return session;
+    },
+  },
 };
 export default NextAuth(authOptions);

@@ -1,25 +1,22 @@
-import { useSession } from 'next-auth/react'
-import React from 'react'
+import { useSession } from 'next-auth/react';
+import { useEffect, useState } from 'react';
+import AccessDenied from './components/auth/AccessDenied';
+import Profile from './components/Profile';
 
-function Profile() {
-  console.log('loading test page');
+function ProfilePage(props: any) {
+  // const { status } = useSession()
+  console.log('ProfilePage Render')
+  console.log(props);
 
-  const { data: session, status } = useSession()
-
-  if (status === "loading") {
-    return <p>Loading...</p>
-  }
-
-  if (status === "unauthenticated") {
-    return <p>Access Denied</p>
-  }
+  // if (status === 'loading') {
+  //   return <p>loading</p>
+  // }
 
   return (
-    <>
-      <h1>Protected Page</h1>
-      <p>You can view this page because you are signed in.</p>
-    </>
+    <AccessDenied>
+      <Profile />
+    </AccessDenied>
   )
 }
 
-export default Profile
+export default ProfilePage

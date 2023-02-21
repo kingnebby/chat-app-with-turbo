@@ -11,13 +11,14 @@ export default function MyApp({
   pageProps,
 }: AppProps) {
   const [queryClient] = React.useState(() => new QueryClient());
+  // TODO: DOES NOT WORK
   const { session } = pageProps
-  console.log(session)
+  console.log('_app.tsx session', session)
   return (
     <>
       <QueryClientProvider client={queryClient}>
         <SessionProvider session={session}>
-          <Component {...pageProps} />;
+          <Component {...pageProps} />
         </SessionProvider>
         <ReactQueryDevtools initialIsOpen={false} />
       </QueryClientProvider>
