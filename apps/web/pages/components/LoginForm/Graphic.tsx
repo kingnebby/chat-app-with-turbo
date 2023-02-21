@@ -1,25 +1,38 @@
 
-import { OrbitControls } from '@react-three/drei'
-import { Canvas } from '@react-three/fiber'
+import { Line, OrbitControls } from '@react-three/drei'
+import { Canvas, Vector3 } from '@react-three/fiber'
 import React from 'react'
+import HoverCamera from './HoverCamera'
 import NodeGraphic from './NodeGraphic'
 
-export const Graphic = () => {
-  return (
-    <Canvas
-      camera={{ position: [0, 0, 16] }}
-    >
-      {/* <ambientLight intensity={0.01} /> */}
-      <OrbitControls />
-      {/* <PerspectiveCamera makeDefault position={[20, 20, 20]} /> */}
-      {/* <perspectiveCamera position={[100, 100, 100]} /> */}
-      <spotLight position={[20, 20, 20]} />
-      {/* <axesHelper /> */}
+// TODO: move
+export type Triplet = [number, number, number]
 
-      <NodeGraphic position={[-2, 2.5, 0]} />
-      <NodeGraphic position={[5, 5, 0]} />
-      <NodeGraphic position={[-3.5, -3, 0]} />
-      <NodeGraphic position={[3.5, -4, 0]} />
+export const Graphic = () => {
+  const vectors: Array<Triplet> = [
+    [-2, 2.5, 2],
+    [5, 5, 0],
+    [-3.5, -3, -2],
+    [3.5, -4, 0],
+  ]
+
+  const nodes = vectors.map(vector => {
+    return <NodeGraphic position={vector} />
+  })
+
+  return (
+    <Canvas>
+      <ambientLight intensity={0.1} />
+      <OrbitControls />
+      <HoverCamera />
+      <pointLight position={[20, 20, 20]} />
+      <axesHelper />
+      {nodes}
+      <Line
+        points={vectors}
+        lineWidth={2}
+        color={"#88ff88"}
+      />
     </Canvas>
   )
 }
