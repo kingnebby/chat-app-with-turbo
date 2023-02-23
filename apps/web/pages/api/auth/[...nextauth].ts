@@ -71,15 +71,10 @@ export const authOptions: AuthOptions = {
         token.accessToken = user.token;
       }
       return token;
-      // return { ...token, userToken: user.token };
     },
-    session({ session, token, user }) {
-      console.log('session');
-      console.log(session, token, user);
-
+    session({ session, token }) {
       // @ts-ignore
       session.accessToken = token?.accessToken;
-
       return session;
     },
   },

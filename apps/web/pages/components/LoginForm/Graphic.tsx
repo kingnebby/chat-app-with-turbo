@@ -16,8 +16,8 @@ export const Graphic = () => {
     [3.5, -4, 0],
   ]
 
-  const nodes = vectors.map(vector => {
-    return <NodeGraphic position={vector} />
+  const nodes = vectors.map((vector, index) => {
+    return <NodeGraphic key={index} position={vector} />
   })
 
   return (

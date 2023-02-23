@@ -1,4 +1,3 @@
-import { useSession } from 'next-auth/react';
 import { useEffect, useState } from 'react';
 
 export type UserProfile = {
@@ -8,15 +7,18 @@ export type UserProfile = {
   roles: string[]
 }
 
+
 function Profile() {
+  debugger;
   const [data, setData] = useState<UserProfile>();
   console.log('Profile Render')
   const token = localStorage.getItem('accessToken')
-  console.log(token)
+  // console.log(token)
+
 
   useEffect(() => {
     console.log('Profile UseEffect Render');
-    console.log(token)
+    // console.log(token)
 
     fetch('http://localhost:9001/users/profile',
       {
