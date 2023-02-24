@@ -11,6 +11,7 @@ describe('UsersServces', () => {
     ],
   };
   const service = UsersService.createFake(seedUsers);
+
   it('returns all users', async () => {
     const users = await service.getUsers();
     expect(users).toHaveLength(1);
@@ -18,6 +19,6 @@ describe('UsersServces', () => {
 
   it('returns user without password', async () => {
     const user = await service.findOne('email');
-    expect((user as any).password).toBeUndefined();
+    expect(user).not.toHaveProperty('password');
   });
 });
