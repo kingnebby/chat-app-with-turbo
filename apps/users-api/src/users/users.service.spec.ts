@@ -1,16 +1,16 @@
-import { PrismaClientFakeConfig, UsersService } from './users.service';
+import { UserModel } from './user.model';
+import { UserModelFakeConfig, UsersService } from './users.service';
 
 describe('UsersServces', () => {
-  const seedUsers: PrismaClientFakeConfig = {
-    users: [
-      {
-        id: 1,
-        email: 'email',
-        password: 'password',
-      },
-    ],
-  };
-  const service = UsersService.createFake(seedUsers);
+  const users: UserModelFakeConfig = [
+    {
+      id: 1,
+      email: 'email',
+      password: 'password',
+    },
+  ];
+  const userModel = UserModel.createFake(users);
+  const service = new UsersService(userModel);
 
   it('returns all users', async () => {
     const users = await service.getUsers();

@@ -1,6 +1,5 @@
 import { Controller, Get } from '@nestjs/common';
 import { UsersService } from './users.service';
-import { User } from '.prisma/client';
 
 export type findAllDTO = {
   id: number;
@@ -11,11 +10,6 @@ export type findAllDTO = {
 @Controller('users')
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
-
-  static createFake() {
-    const fakeUserService: any = new UsersServiceFake();
-    return new UsersController(fakeUserService);
-  }
 
   @Get()
   async findAll(): Promise<findAllDTO[]> {
@@ -29,16 +23,4 @@ export class UsersController {
   }
 }
 
-class UsersServiceFake {
-  async getUsers(): Promise<User[]> {
-    return [
-      {
-        email: 'email',
-        id: 1,
-        password: 'password',
-        username: 'username',
-        usersRoles: ['ADMIN'],
-      },
-    ];
-  }
-}
+// Since this is "top level" there's no dependency needed to fake.
