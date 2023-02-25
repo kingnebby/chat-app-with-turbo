@@ -15,7 +15,7 @@ export class UsersService {
 
   async getUsers() {
     const allUsers = await this.userModel.findMany();
-    return allUsers;
+    return allUsers.map((user) => exclude(user, ['password']));
   }
 
   async findOne(email: string): Promise<UserType> {

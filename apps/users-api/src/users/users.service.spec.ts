@@ -14,7 +14,9 @@ describe('UsersServces', () => {
 
   it('returns all users', async () => {
     const users = await service.getUsers();
+    // ensure no passwords..
     expect(users).toHaveLength(1);
+    users.forEach((user) => expect(user).not.toHaveProperty('password'));
   });
 
   it('returns user without password', async () => {
