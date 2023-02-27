@@ -31,18 +31,24 @@ export class UsersService {
 
 // Fake Dependencies
 export type UserModelFakeConfig = Array<Partial<User>>;
+// TODO: Would this be better? to fully implement the interface? I suppose.
+// class UserModelFake implements UserModel {
 class UserModelFake {
   constructor(private readonly config: UserModelFakeConfig) {}
   /**
    * @returns all items
    */
-  findMany() {
+  async findMany() {
     return this.config;
   }
   /**
    * @returns returns the first element always
    */
-  findUniqueByEmail() {
+  async findUniqueByEmail() {
     return this.config[0];
+  }
+
+  async getPassword(_email: string) {
+    return 'password';
   }
 }

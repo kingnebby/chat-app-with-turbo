@@ -1,7 +1,7 @@
 import { UserModel } from './user.model';
 import { UserModelFakeConfig, UsersService } from './users.service';
 
-describe('UsersServces', () => {
+describe('UsersService Sociable Test', () => {
   const users: UserModelFakeConfig = [
     {
       id: 1,
