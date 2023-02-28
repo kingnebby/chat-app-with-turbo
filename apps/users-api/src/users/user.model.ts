@@ -26,6 +26,27 @@ export class UserModel {
   }
 }
 
+// you would export all these for funions.
+class UserModelFake {
+  constructor(private readonly config: Partial<User>[]) {}
+  /**
+   * @returns all items
+   */
+  async findMany() {
+    return this.config;
+  }
+  /**
+   * @returns returns the first element always
+   */
+  async findUniqueByEmail() {
+    return this.config[0];
+  }
+
+  async getPassword(_email: string) {
+    return 'password';
+  }
+}
+
 // Nullable Infrastructure === Fake Dependencies
 export type UserModelFakeConfig = Array<Partial<User>>;
 class PrismaClientFake {

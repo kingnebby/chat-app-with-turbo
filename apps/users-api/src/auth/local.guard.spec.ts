@@ -1,24 +1,29 @@
-/**
- * Todo: see how we can use super test to do api level e2e tests.
- */
-
+import { JwtService } from '@nestjs/jwt';
+import { expectToThrowWithMatchingError } from '../test/util';
+import { UsersService } from '../users/users.service';
 import { AuthService } from './auth.service';
 import { LocalStrategy } from './local.strategy';
+import { SaltService } from './salt.service';
 
-// TODO: refactor, this is not an e2e, just testing if the strategy could be
-// tested with the same social test idea as before.
-describe('LocalStrategy', () => {
+describe('LocalStrategy:DeepTest', () => {
   it('should return user when username and password are valid', async () => {
-    const localStrat = new LocalStrategy(AuthService.createFake());
-    const user = await localStrat.validate('username', 'password');
+    const authService = new AuthService(
+      UsersService.createFake(),
+      new JwtService(),
+      SaltService.createFake(),
+    );
+    const localStrategy = new LocalStrategy(authService);
+    const user = await localStrategy.validate('username', 'password');
     expect(user).toHaveProperty('email');
   });
 
-  it('should return error when not valid', async () => {
-    const localStrat = new LocalStrategy(
+  it('should throw error when not valid', async () => {
+    const localStrategy = new LocalStrategy(
       AuthService.createFake({ failValidate: true }),
     );
-    const user = await localStrat.validate('username', 'password');
-    expect(user).toHaveProperty('email');
+    await expectToThrowWithMatchingError(
+      localStrategy.validate.bind(localStrategy, 'username', 'password'),
+      'Unauthorized Exception',
+    );
   });
 });

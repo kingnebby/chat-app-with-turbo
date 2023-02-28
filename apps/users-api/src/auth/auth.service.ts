@@ -1,9 +1,10 @@
 import { Injectable, Logger } from '@nestjs/common';
-import { JwtService } from '@nestjs/jwt';
+import { JwtService, JwtSignOptions } from '@nestjs/jwt';
 import { UsersService } from '../users/users.service';
 import { TokenPayload } from './dto/token.dto';
-import { UserDTO, UserType } from './dto/user.dto';
+import { UserDTO } from './dto/user.dto';
 import { SaltService } from './salt.service';
+import { PublicMembersOf } from './types.utils';
 
 @Injectable()
 export class AuthService {
@@ -13,12 +14,9 @@ export class AuthService {
     private saltService: SaltService,
   ) {}
 
-  static createFake(config: AuthServiceFakeConfig = {}) {
-    return new AuthService(
-      new UserServiceFake(),
-      new JwtServiceFake(),
-      new SaltServiceFake({ failValidate: config.failValidate }),
-    );
+  static createFake(config: AuthServiceFakeConfig = {}): AuthService {
+    const fake: unknown = new AuthServiceFake(config);
+    return fake as AuthService;
   }
 
   async validateUser(_email: string, pass: string): Promise<UserDTO> {
@@ -50,53 +48,19 @@ export class AuthService {
   }
 }
 
-type AuthServiceFakeConfig = {
+export type AuthServiceFakeConfig = {
   failValidate?: boolean;
 };
-
-class JwtServiceFake extends JwtService {
-  /**
-   * TODO: implement this method. I'm wondering if in the constructor
-   * we allow flags that say "validate: true/false" to run different scenarios.
-   */
-  // validateUser()
-
-  sign() {
-    return 'signed_jwt_token';
-  }
-}
-
-class UserServiceFake extends UsersService {
-  constructor() {
-    super({} as any);
-  }
-  async getPassword(_email: string): Promise<string> {
-    return 'password';
-  }
-  async findOne(_email: string): Promise<UserType> {
-    return {
-      username: '',
-      email: '',
-      id: 1,
-      usersRoles: [],
-    };
-  }
-  // async findOne() {
-  //   return {}
-  // }
-}
-
-type SaltServiceConfig = {
-  failValidate: boolean;
-};
-class SaltServiceFake extends SaltService {
-  constructor(private readonly config: SaltServiceConfig) {
-    super();
-  }
-  async compare() {
-    if (this.config.failValidate === true) {
-      throw new Error('compare function failed');
+class AuthServiceFake implements PublicMembersOf<AuthService> {
+  constructor(private config: AuthServiceFakeConfig) {}
+  async validateUser(email: string, _pass: string): Promise<UserDTO> {
+    if (this.config.failValidate) {
+      // TODO: should make a public member (all errors should be treated as public members)
+      throw new Error('unable to validate user');
     }
-    return true;
+    return { email, id: 1, roles: [], username: '' };
+  }
+  async login(_user: UserDTO): Promise<{ access_token: string }> {
+    return { access_token: 'fake access_token' };
   }
 }

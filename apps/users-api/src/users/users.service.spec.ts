@@ -1,8 +1,8 @@
 import { UserModel } from './user.model';
-import { UserModelFakeConfig, UsersService } from './users.service';
+import { PartialUser, UsersService } from './users.service';
 
 describe('UsersService Sociable Test', () => {
-  const users: UserModelFakeConfig = [
+  const users: PartialUser[] = [
     {
       id: 1,
       email: 'email',

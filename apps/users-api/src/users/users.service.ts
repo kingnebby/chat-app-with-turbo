@@ -3,14 +3,20 @@ import { User } from '.prisma/client';
 import { UserType } from 'src/auth/dto/user.dto';
 import { UserModel } from './user.model';
 import { exclude } from './exclude';
+import { PublicMembersOf } from 'src/auth/types.utils';
+
+export type PartialUser = Partial<User>;
 
 @Injectable()
 export class UsersService {
   constructor(private readonly userModel: UserModel) {}
 
-  static createFake(config: { users: UserModelFakeConfig } = { users: [] }) {
-    const fakeModel: any = new UserModelFake(config.users);
-    return new UsersService(fakeModel);
+  // One problem with allowing partials is that you have to do
+  // some type casting when the Fake class implements the main class.
+  static createFake(config?: { users?: PartialUser[] }): UsersService {
+    // Because typescript still has issues with types, we have to help.
+    const instance: unknown = new UserServiceFake(config);
+    return instance as UsersService;
   }
 
   async getUsers() {
@@ -29,26 +35,28 @@ export class UsersService {
   }
 }
 
-// Fake Dependencies
-export type UserModelFakeConfig = Array<Partial<User>>;
-// TODO: Would this be better? to fully implement the interface? I suppose.
-// class UserModelFake implements UserModel {
-class UserModelFake {
-  constructor(private readonly config: UserModelFakeConfig) {}
-  /**
-   * @returns all items
-   */
-  async findMany() {
-    return this.config;
+class UserServiceFake implements PublicMembersOf<UsersService> {
+  fakeUsers: PartialUser[] = [
+    {
+      id: 1,
+      email: 'email',
+      username: 'username',
+      password: 'password',
+      usersRoles: [],
+    },
+  ];
+  constructor(config?: { users?: PartialUser[] }) {
+    if (config?.users) {
+      this.fakeUsers = config.users;
+    }
   }
-  /**
-   * @returns returns the first element always
-   */
-  async findUniqueByEmail() {
-    return this.config[0];
+  async getUsers(): Promise<Omit<User, 'password'>[]> {
+    return this.fakeUsers.map(({ password, ...rest }) => rest) as User[];
   }
-
-  async getPassword(_email: string) {
-    return 'password';
+  async findOne(email: string): Promise<UserType> {
+    return this.fakeUsers[0] as User;
+  }
+  async getPassword(email: string): Promise<string> {
+    return this.fakeUsers[0].password;
   }
 }
