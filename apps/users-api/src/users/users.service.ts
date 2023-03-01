@@ -3,7 +3,7 @@ import { User } from '.prisma/client';
 import { UserType } from 'src/auth/dto/user.dto';
 import { UserModel } from './user.model';
 import { exclude } from './exclude';
-import { PublicMembersOf } from 'src/auth/types.utils';
+import { PublicMembersOf } from '../auth/types.utils';
 
 export type PartialUser = Partial<User>;
 
@@ -15,8 +15,7 @@ export class UsersService {
   // some type casting when the Fake class implements the main class.
   static createFake(config?: { users?: PartialUser[] }): UsersService {
     // Because typescript still has issues with types, we have to help.
-    const instance: unknown = new UserServiceFake(config);
-    return instance as UsersService;
+    return <UsersService>(<unknown>new UserServiceFake(config));
   }
 
   async getUsers() {
@@ -54,9 +53,13 @@ class UserServiceFake implements PublicMembersOf<UsersService> {
     return this.fakeUsers.map(({ password, ...rest }) => rest) as User[];
   }
   async findOne(email: string): Promise<UserType> {
-    return this.fakeUsers[0] as User;
+    return this.fakeUsers.find((el) => el.email === email) as User;
   }
   async getPassword(email: string): Promise<string> {
-    return this.fakeUsers[0].password;
+    const user = this.fakeUsers.find((el) => el.email === email);
+    if (!user) {
+      throw new Error('could not find user');
+    }
+    return user.password;
   }
 }

@@ -1,14 +1,14 @@
 import { Injectable } from '@nestjs/common';
-import { PrismaClientProvider } from './prisma-client.provider';
+import { PrismaClientProvider } from '../lib/prisma/prisma-client.provider';
 import { User } from '.prisma/client';
+import { PublicMembersOf } from '../auth/types.utils';
 
 @Injectable()
 export class UserModel {
   constructor(private readonly prisma: PrismaClientProvider) {}
 
-  static createFake(config?: UserModelFakeConfig) {
-    const fakeClient: any = new PrismaClientFake(config);
-    return new UserModel(fakeClient);
+  static createFake(config?: Partial<User>[]): UserModel {
+    return <UserModel>(<unknown>new UserModelFake(config));
   }
 
   async findMany() {
@@ -26,40 +26,22 @@ export class UserModel {
   }
 }
 
-// you would export all these for funions.
-class UserModelFake {
-  constructor(private readonly config: Partial<User>[]) {}
+class UserModelFake implements PublicMembersOf<UserModel> {
+  constructor(private readonly config?: Partial<User>[]) {}
   /**
    * @returns all items
    */
   async findMany() {
-    return this.config;
+    return <User[]>this.config;
   }
   /**
    * @returns returns the first element always
    */
   async findUniqueByEmail() {
-    return this.config[0];
+    return <User>this.config[0];
   }
 
   async getPassword(_email: string) {
     return 'password';
   }
-}
-
-// Nullable Infrastructure === Fake Dependencies
-export type UserModelFakeConfig = Array<Partial<User>>;
-class PrismaClientFake {
-  // TODO: should we allow for fake data per method in the config?
-  constructor(private readonly data: UserModelFakeConfig = []) {}
-
-  user = {
-    findMany: async () => {
-      return this.data;
-    },
-    // TODO: type query with Prisma
-    findUnique: async (query: any) => {
-      return this.data.find((el) => el.email === query.where.email);
-    },
-  };
 }

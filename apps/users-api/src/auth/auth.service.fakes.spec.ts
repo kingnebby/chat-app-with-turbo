@@ -1,117 +1,11 @@
-// import *  from 'jest'
 import { User } from '.prisma/client';
-import { JwtService as _JwtService } from '@nestjs/jwt';
 import { UsersService } from '../users/users.service';
 import { SaltService } from './salt.service';
 import { expectToThrowWithMatchingError } from '../test/util';
-jest.mock('@nestjs/jwt');
-jest.mock('../users/users.service');
-jest.mock('./salt.service');
-
-// class under test
 import { AuthService } from './auth.service';
 import { JwtService } from '../lib/jwt/jwt.service';
+import { UserModel } from '../users/user.model';
 
-/**
- * What does it look like with mocks?
- */
-// TODO
-describe('AuthService::UnitTest::Mocks', () => {
-  /**
-   * Classic mock based approach.
-   */
-  it('should return valid user', async () => {
-    const mockedUsersService = jest.mocked(new UsersService({} as any));
-    const mockedJwtService = jest.mocked(new _JwtService());
-    const mockedSaltService = jest.mocked(new SaltService());
-
-    // internals of the function are exposed and realistic values isolated.
-    mockedUsersService.getPassword.mockResolvedValue('password');
-    // mockedUsersService.getPassword.mockRejectedValue(new Error('what error?'));
-    mockedSaltService.compare.mockResolvedValue(true);
-    mockedUsersService.findOne.mockResolvedValue({
-      email: 'email',
-      id: 1,
-      username: 'username',
-      usersRoles: [],
-    });
-
-    const authService = new AuthService(
-      mockedUsersService,
-      mockedJwtService,
-      mockedSaltService,
-    );
-    const user = await authService.validateUser('email', 'password');
-    expect(user).toHaveProperty('email');
-    expect(user).not.toHaveProperty('password');
-  });
-  it('should return a login token', async () => {
-    const mockedUsersService = jest.mocked(new UsersService({} as any));
-    const mockedJwtService = jest.mocked(new _JwtService());
-    const mockedSaltService = jest.mocked(new SaltService());
-    mockedJwtService.sign.mockReturnValue('somestring');
-    const authService = new AuthService(
-      mockedUsersService,
-      mockedJwtService,
-      mockedSaltService,
-    );
-    const { access_token } = await authService.login({
-      email: 'email',
-      id: 1,
-      roles: [],
-      username: 'username',
-    });
-    expect(access_token).toBeDefined();
-    expect(access_token).toBe('somestring');
-  });
-});
-fdescribe('AuthService::UnitTest::Fakes', () => {
-  it('should return valid user', async () => {
-    const { UsersService } = jest.requireActual('../users/users.service');
-    const { SaltService } = jest.requireActual('./salt.service');
-    // const { JwtService } = jest.requireActual('../lib/jwt/jwt.service');
-    // const mockedUsersService = jest.mocked(new UsersService({} as any));
-    // const mockedJwtService = jest.mocked(new JwtService());
-    const mockedSaltService = jest.mocked(new SaltService());
-
-    // internals of the function are exposed and realistic values isolated.
-    // mockedUsersService.getPassword.mockResolvedValue('password');
-    // mockedSaltService.compare.mockResolvedValue(false);
-    // mockedUsersService.findOne.mockResolvedValue({
-    //   email: 'email',
-    //   id: 1,
-    //   username: 'username',
-    //   usersRoles: [],
-    // });
-
-    const authService = new AuthService(
-      UsersService.createFake(),
-      mockedSaltService,
-      // JwtService.createFake(),
-      SaltService.createFake(),
-    );
-    const user = await authService.validateUser('email', 'password');
-    expect(user).toHaveProperty('email');
-    expect(user).not.toHaveProperty('password');
-  });
-
-  it('should return a login token', async () => {
-    const { UsersService } = jest.requireActual('../users/users.service');
-    const { SaltService } = jest.requireActual('./salt.service');
-    const authService = new AuthService(
-      UsersService.createFake(),
-      JwtService.createFake(),
-      SaltService.createFake(),
-    );
-    const { access_token } = await authService.login({
-      email: 'email',
-      id: 1,
-      roles: [],
-      username: 'username',
-    });
-    expect(access_token).toBeDefined();
-  });
-});
 /*
  * Example of traditional unit tests, but with no mocks, only fakes.
  * This already looks nearly just as clean as regular mocked tests.
@@ -124,7 +18,7 @@ describe('AuthService::UnitTest', () => {
   const setup = (users?: Partial<User>[]) => {
     const authService = new AuthService(
       UsersService.createFake({ users }),
-      new _JwtService({ secret: 'secret' }),
+      new JwtService({ secret: 'secret' }),
       SaltService.createFake(),
     );
     return { authService };
@@ -151,7 +45,7 @@ describe('AuthService::UnitTest', () => {
 
     await expectToThrowWithMatchingError(
       authService.validateUser.bind(authService, 'wrongemail', 'password'),
-      'unable to validate user',
+      'could not find user',
     );
   });
 
@@ -176,8 +70,9 @@ describe('AuthService::UnitTest', () => {
       roles: [],
       username: 'username',
     });
-    const jwtService = new _JwtService();
+    const jwtService = new JwtService();
     expect(jwtService.decode(access_token)).toBeDefined();
+    expect(jwtService.decode(access_token)).toHaveProperty('sub');
     // TODO: test structure with zod.
   });
 });
@@ -194,14 +89,14 @@ describe('AuthService::DeepTest', () => {
   const originalPassword = 'password';
   const email = 'email';
   // Also a class that should just work out of the box.
-  const jwtService = new _JwtService({ secret: 'secret' });
+  const jwtService = new JwtService({ secret: 'secret' });
 
   const setup = async () => {
     // Create a valid password (it's util functions after all)
     const generatedPassword = await saltService.hashPassword(originalPassword);
-    const userService = UsersService.createFake({
-      users: [{ email: email, password: generatedPassword }],
-    });
+    const config = [{ email: email, password: generatedPassword }];
+    const userModel = UserModel.createFake(config);
+    const userService = new UsersService(userModel);
 
     // Service Under Test
     const authService = new AuthService(userService, jwtService, saltService);

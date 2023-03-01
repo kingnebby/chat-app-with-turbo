@@ -5,6 +5,11 @@ import { AuthService } from './auth.service';
 import { LocalStrategy } from './local.strategy';
 import { SaltService } from './salt.service';
 
+/**
+ * I wouldn't normally write this test. I would let simple guards
+ * like this one be covered by e2e tests.
+ * TODO: what would supertest looks like?
+ */
 describe('LocalStrategy:DeepTest', () => {
   it('should return user when username and password are valid', async () => {
     const authService = new AuthService(
@@ -13,8 +18,8 @@ describe('LocalStrategy:DeepTest', () => {
       SaltService.createFake(),
     );
     const localStrategy = new LocalStrategy(authService);
-    const user = await localStrategy.validate('username', 'password');
-    expect(user).toHaveProperty('email');
+    const user = await localStrategy.validate('email', 'password');
+    expect(user).toHaveProperty('username');
   });
 
   it('should throw error when not valid', async () => {
