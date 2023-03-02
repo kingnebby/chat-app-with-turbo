@@ -1,13 +1,14 @@
 import { PrismaClient } from '.prisma/client';
-import { hashPassword } from '../src/auth/salt.service';
+import { SaltService } from '../src/auth/salt.service';
 const prisma = new PrismaClient();
 async function main() {
   // create
+  const saltService = new SaltService();
   const createDan = prisma.user.create({
     data: {
       email: 'dan@jemini.io',
       username: 'kingnebby',
-      password: await hashPassword('password'),
+      password: await saltService.hashPassword('password'),
       profile: { create: { bio: 'I do stuff and things' } },
       usersRoles: ['USER'],
     },
@@ -16,7 +17,7 @@ async function main() {
     data: {
       email: 'em@jemini.io',
       username: 'joywave',
-      password: await hashPassword('password'),
+      password: await saltService.hashPassword('password'),
       profile: { create: { bio: 'I do things and stuff' } },
       usersRoles: ['ADMIN', 'USER'],
     },
