@@ -1,10 +1,13 @@
 import { Injectable } from '@nestjs/common';
-import { PrismaClient } from '.prisma/client';
+import { PrismaClient, User } from '.prisma/client';
 import { UserType } from 'src/auth/dto/user.dto';
 const prisma = new PrismaClient();
 
 @Injectable()
 export class UsersService {
+  static createFake(): UsersService {
+    return new UsersServiceFake();
+  }
   async getUsers() {
     const allUsers = await prisma.user.findMany();
     return allUsers;
@@ -29,4 +32,30 @@ function exclude<T, Key extends keyof T>(object: T, keys: Key[]): Omit<T, Key> {
     delete object[key];
   }
   return object;
+}
+
+class UsersServiceFake implements UsersService {
+  fakeUsers: User[] = [
+    {
+      email: 'email',
+      id: 1,
+      password: 'password',
+      username: 'username',
+      usersRoles: [],
+    },
+  ];
+
+  async getUsers(): Promise<User[]> {
+    throw new Error('Method not implemented.');
+  }
+  async findOne(email: string): Promise<UserType> {
+    return this.fakeUsers.find((user) => user.email === email);
+  }
+  async getPassword(email: string): Promise<string> {
+    const user = this.fakeUsers.find((user) => user.email === email);
+    if (user) {
+      return user.password;
+    }
+    throw new Error('could not find user');
+  }
 }
