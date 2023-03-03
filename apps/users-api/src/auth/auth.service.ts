@@ -1,9 +1,9 @@
 import { Injectable, Logger } from '@nestjs/common';
-import { JwtService } from '@nestjs/jwt';
 import { UsersService } from '../users/users.service';
 import { TokenPayload } from './dto/token.dto';
 import { UserDTO } from './dto/user.dto';
 import { compare } from './salt-password';
+import { JwtService } from './utils/jwt.service';
 
 @Injectable()
 export class AuthService {

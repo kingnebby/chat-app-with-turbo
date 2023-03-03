@@ -62,6 +62,24 @@ describe('AuthService::UnitTest::Mocks', () => {
       expect(error.message).toEqual(expectedMessage);
     }
   });
+
+  it('should return a login token', async () => {
+    const mockedUsersService = jest.mocked(new UsersService());
+    const mockedJwtService = jest.mocked(new JwtService());
+
+    // setup test
+    mockedJwtService.sign.mockReturnValue('somestring');
+
+    const authService = new AuthService(mockedUsersService, mockedJwtService);
+    const { access_token } = await authService.login({
+      email: 'email',
+      id: 1,
+      roles: [],
+      username: 'username',
+    });
+    expect(access_token).toBeDefined();
+    expect(access_token).toBe('somestring');
+  });
 });
 
 describe('AuthService::UnitTest::Fakes', () => {
@@ -99,5 +117,23 @@ describe('AuthService::UnitTest::Fakes', () => {
     } catch (error) {
       expect(error.message).toEqual(expectedMessage);
     }
+  });
+
+  it('should return a login token', async () => {
+    const { UsersService } = jest.requireActual('../../users/users.service');
+    const { JwtService } = jest.requireActual('../utils/jwt.service');
+
+    const authService = new AuthService(
+      UsersService.createFake(),
+      JwtService.createFake(),
+    );
+    const { access_token } = await authService.login({
+      email: 'email',
+      id: 1,
+      roles: [],
+      username: 'username',
+    });
+    expect(access_token).toBeDefined();
+    expect(access_token).toBe('jwt-token');
   });
 });
