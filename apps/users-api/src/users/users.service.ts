@@ -1,27 +1,28 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaClient, User } from '.prisma/client';
 import { UserType } from 'src/auth/dto/user.dto';
-const prisma = new PrismaClient();
 
 @Injectable()
 export class UsersService {
+  constructor(private readonly prisma: PrismaClient) {}
+
   static createFake(): UsersService {
-    return new UsersServiceFake();
+    return <UsersService>(<unknown>new UsersServiceFake());
   }
   async getUsers() {
-    const allUsers = await prisma.user.findMany();
+    const allUsers = await this.prisma.user.findMany();
     return allUsers;
   }
 
   async findOne(email: string): Promise<UserType> {
-    const user = await prisma.user.findUnique({
+    const user = await this.prisma.user.findUnique({
       where: { email: email },
     });
     return exclude(user, ['password']);
   }
 
   async getPassword(email: string) {
-    const user = await prisma.user.findUnique({ where: { email: email } });
+    const user = await this.prisma.user.findUnique({ where: { email: email } });
     return user.password;
   }
 }
@@ -34,7 +35,9 @@ function exclude<T, Key extends keyof T>(object: T, keys: Key[]): Omit<T, Key> {
   return object;
 }
 
-class UsersServiceFake implements UsersService {
+// TODO: make a generic utility
+type PublicMembersOf<T> = { [K in keyof T]: T[K] };
+class UsersServiceFake implements PublicMembersOf<UsersService> {
   fakeUsers: User[] = [
     {
       email: 'email',

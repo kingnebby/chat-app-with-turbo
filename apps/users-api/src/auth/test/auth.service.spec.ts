@@ -1,19 +1,18 @@
-// auth.services.spec.ts
-
-jest.mock('@nestjs/jwt');
-jest.mock('../../users/users.service');
-jest.mock('../salt-password');
 import { JwtService } from '@nestjs/jwt';
 import { UsersService } from '../../users/users.service';
 import { compare } from '../salt-password';
+jest.mock('@nestjs/jwt');
+jest.mock('../../users/users.service');
+jest.mock('../salt-password');
 
 // class under test
 import { AuthService } from '../auth.service';
+import { PrismaClientProvider } from '../utils/prisma.service';
 
 describe('AuthService::UnitTest::Mocks', () => {
   it('should return valid user', async () => {
     // mock your classes
-    const mockedUsersService = jest.mocked(new UsersService());
+    const mockedUsersService = jest.mocked(new UsersService(null));
     const mockedJwtService = jest.mocked(new JwtService());
     const mockedCompare = jest.mocked(compare);
 
@@ -35,7 +34,7 @@ describe('AuthService::UnitTest::Mocks', () => {
 
   it('should fail when user is not found', async () => {
     // mock your classes
-    const mockedUsersService = jest.mocked(new UsersService());
+    const mockedUsersService = jest.mocked(new UsersService(null));
     const mockedJwtService = jest.mocked(new JwtService());
     const mockedCompare = jest.mocked(compare);
 
@@ -64,7 +63,7 @@ describe('AuthService::UnitTest::Mocks', () => {
   });
 
   it('should return a login token', async () => {
-    const mockedUsersService = jest.mocked(new UsersService());
+    const mockedUsersService = jest.mocked(new UsersService(null));
     const mockedJwtService = jest.mocked(new JwtService());
 
     // setup test
@@ -135,5 +134,43 @@ describe('AuthService::UnitTest::Fakes', () => {
     });
     expect(access_token).toBeDefined();
     expect(access_token).toBe('jwt-token');
+  });
+});
+
+describe('AuthService::UnitTest::DeepFakes', () => {
+  it('should return a valid user', async () => {
+    const { JwtService } = jest.requireActual('../utils/jwt.service');
+    const { UsersService } = jest.requireActual('../../users/users.service');
+
+    // Service Under Test
+    const prisma = PrismaClientProvider.createFake();
+    const authService = new AuthService(
+      new UsersService(prisma),
+      JwtService.createFake(),
+    );
+    // Test
+    const user = await authService.validateUser('email', 'password');
+    expect(user).toHaveProperty('email');
+    expect(user).not.toHaveProperty('password');
+  });
+
+  it('should fail when user is not found', async () => {
+    const { JwtService } = jest.requireActual('../utils/jwt.service');
+    const { UsersService } = jest.requireActual('../../users/users.service');
+
+    // Service Under Test
+    const prisma = PrismaClientProvider.createFake();
+    const authService = new AuthService(
+      new UsersService(prisma),
+      JwtService.createFake(),
+    );
+    // Test
+    const expectedMessage = 'could not find user';
+    try {
+      await authService.validateUser('wrongemail', 'password');
+      throw new Error(`should throw error: ${expectedMessage}`);
+    } catch (error) {
+      expect(error.message).toEqual(expectedMessage);
+    }
   });
 });
